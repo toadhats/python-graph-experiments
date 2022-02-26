@@ -1,9 +1,9 @@
 #: Breadth-first search
-from queue import Queue  # for bfs we will need a queue
+from queue import Queue  # for bfs we will need a queue obvs
 import time
 
 
-def dumb_bfs(
+def bfs(
     graph,
     start: str,
     goal: str,
@@ -61,7 +61,7 @@ graph = {
     "F": [],
 }
 
-path = dumb_bfs(graph, "A", "F")
+path = bfs(graph, "A", "F")
 
 # Case where graph is undirected and acyclic
 graph = {
@@ -73,7 +73,7 @@ graph = {
     "F": ["E"],
 }
 
-path = dumb_bfs(graph, "A", "F")
+path = bfs(graph, "A", "F")
 
 # Case where graph has:
 # - directed and undirected edges
@@ -95,9 +95,9 @@ graph = {
 }
 
 start = time.time()
-path = dumb_bfs(graph, "A", "F")
-path = dumb_bfs(graph, "A", "J")
-path = dumb_bfs(graph, "G", "K")
+path = bfs(graph, "A", "F")
+path = bfs(graph, "A", "J")
+path = bfs(graph, "G", "K")
 end = time.time()
 print(f"Took {end - start}")
 

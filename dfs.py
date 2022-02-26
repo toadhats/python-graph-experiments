@@ -105,4 +105,4 @@ end = time.time()
 print(f"Took {end - start}")
 
 
-# Lesson: DFS fails to find the shortest path, because it stops when it finds the longer path first.
+# Lesson: DFS fails to find the shortest path, it stops when it finds any path.
