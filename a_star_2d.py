@@ -92,27 +92,27 @@ class NavGraph:
 
 # Test 1
 world = Map("map1")
-print("\n\n---------- Map 1 ----------")
+print("\n\n~~~~~~~~~~ Map 1 ~~~~~~~~~~")
 world.display()
 graph = NavGraph(world)
 path = graph.a_star()
-print("\n---------- Solution ----------")
+print("\n~~~~~~~~~~ Solution ~~~~~~~~~~")
 graph.write_path()
 
 # Test 2
 world = Map("map2")
-print("\n\n---------- Map 2 ----------")
+print("\n\n~~~~~~~~~~ Map 2 ~~~~~~~~~~")
 world.display()
 graph = NavGraph(world)
 path = graph.a_star()
-print("\n---------- Solution ----------")
+print("\n~~~~~~~~~~ Solution ~~~~~~~~~~")
 graph.write_path()
 
 # Test 3
 world = Map("map3")
-print("\n\n---------- Map 3 ----------")
+print("\n\n~~~~~~~~~~ Map 3 ~~~~~~~~~~")
 world.display()
 graph = NavGraph(world)
 path = graph.a_star()
-print("\n---------- Solution ----------")
+print("\n~~~~~~~~~~ Solution ~~~~~~~~~~")
 graph.write_path()
