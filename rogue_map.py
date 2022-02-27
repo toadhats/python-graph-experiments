@@ -38,15 +38,15 @@ DIRECTIONS = {
 
 
 class Map:
-
-    grid = defaultdict()  # k will be a tuple, v will be the terrain type
-    adjacency = defaultdict()  # Empty adjacency matrix
-    # Width and height, used to display
-    # Can be different, but assume consistent width
-    W = 0
-    H = 0
-
     def __init__(self, file):
+        self.grid = defaultdict()  # k will be a tuple, v will be the terrain type
+        self.adjacency = defaultdict()  # Empty adjacency matrix
+        # Width and height, used to display
+        # Can be different, but assume consistent width
+        self.W = 0
+        self.H = 0
+        self.start = (0, 0)
+        self.goal = (0, 0)
         with open(file) as f:
             for y, line in enumerate(f):
                 line = line.replace(" ", "")
@@ -65,6 +65,11 @@ class Map:
                             continue
                         s = (x, y)
                         self.grid[s] = char
+                        if char == "S":
+                            self.start = s
+                        if char == "G":
+                            self.goal = s
+        logging.info(f"Loaded map {file}")
 
     def display(self):
         for n in self.grid:
@@ -124,6 +129,6 @@ class Map:
 
 
 # Test:
-test = Map("map.ascii")
-test.display()
-test.build()
+# test = Map("map1")
+# test.display()
+# test.build()

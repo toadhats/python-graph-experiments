@@ -1,96 +1,118 @@
 """A* implementation designed to navigate 2D spaces, where the heuristic function
 is the manhattan distance to the goal
 """
+import logging
+from typing import Tuple
 from rogue_map import Map
 
 
-class Graph:
-    def __init__(self, adjacency_list):
-        self.adjacency_list = adjacency_list
+class NavGraph:
+    def __init__(self, map: Map):
+        self.map = map
+        self.map.build()
 
     def get_neighbors(self, v):
-        return self.adjacency_list[v]
+        return self.map.adjacency[v]
 
-    # placeholder heuristic that checks a hardcoded lookup table
-    # Remember, heuristic must simply never OVER-estimate
-    def h(self, n):
-        H = {"A": 1, "B": 1, "C": 1, "D": 1, "E": 1, "F": 1, "G": 1}
-        return H[n]
+    def h(self, a: Tuple[int, int], b: Tuple[int, int]) -> int:
+        """Heuristic = manhattan distance between two points"""
+        return sum(abs(x - y) for x, y in zip(a, b))
 
-    def a_star(self, start_node, goal_node):
-        """open_list contains nodes which have been visited, but whose neighbors
-        haven't all been inspected, beginning with the start node
-        closed_list contains nodes which have been visited
-        and who's neighbors have been inspected
-        """
-        open_list = set([start_node])
+    def a_star(self):
+        start = self.map.start
+        goal = self.map.goal
+        open_list = set([start])
         closed_list = set([])
 
-        """g maps current distances from start_node to all other nodes
-        as with dijkstra's, the default value will be +infinity
-        """
-        g = {}
+        """Current distances from start_node to all other nodes."""
+        cost = {}
 
-        g[start_node] = 0
+        cost[start] = 0
 
         # parents contains an adjacency map of all nodes
         parents = {}
-        parents[start_node] = start_node
+        parents[start] = start
 
         while len(open_list) > 0:
-            n = None
+            current = None
 
-            # find a node with the lowest value of evaluation function f()
             for v in open_list:
-                if n is None or g[v] + self.h(v) < g[n] + self.h(n):
-                    n = v
+                if current is None or cost[v] + self.h(current, v) < cost[
+                    current
+                ] + self.h(v, current):
+                    current = v
 
-            if n is None:
+            if current is None:
                 print("No path!")
                 return None
 
-            # if the current node is the stop_node
-            # then we begin retracing the steps from the start_node
-            if n == goal_node:
+            if current == goal:
                 path = []
 
-                while parents[n] != n:
-                    path.append(n)
-                    n = parents[n]
+                while parents[current] != current:
+                    path.append(current)
+                    current = parents[current]
 
-                path.append(start_node)
+                path.append(start)
+                path.reverse()
 
-                path.reverse()  # just sugar really
-
-                print(f"Path found: {path}")
-                print(f"Cost: {g[goal_node]}")
+                logging.info(f"Path found: {path}")
+                logging.info(f"Cost: {cost[goal]}")
+                self.path = path
                 return path
 
-            # for all neighbors of the current node do
-            for (m, weight) in self.get_neighbors(n):
+            for (m, weight) in self.get_neighbors(current):
                 if m not in open_list and m not in closed_list:
                     # Discover new node
                     open_list.add(m)
-                    parents[m] = n
-                    g[m] = g[n] + weight
+                    parents[m] = current
+                    cost[m] = cost[current] + weight
 
-                # otherwise, check if it's quicker to first visit n, then m
-                # and if it is, update parent data and g data
-                # and if the node was in the closed_list, move it to open_list
                 else:
-                    if g[m] > g[n] + weight:
-                        g[m] = g[n] + weight
-                        parents[m] = n
+                    if cost[m] > cost[current] + weight:
+                        cost[m] = cost[current] + weight
+                        parents[m] = current
 
                         if m in closed_list:
                             closed_list.remove(m)
                             open_list.add(m)
 
-            # remove n from the open list, and add it to the closed list
-            # because all of his neighbors were inspected
-            open_list.remove(n)
-            closed_list.add(n)
+            open_list.remove(current)
+            closed_list.add(current)
 
         # If we have left the loop without returning a path, fail
-        print(f" No path exists between {start_node} and {goal_node}")
+        logging.error(f" No path exists between {start} and {goal}")
         return None
+
+    def write_path(self):
+        for node in self.path:
+            self.map.grid[node] = "#"
+        self.map.display()
+
+
+# Test 1
+world = Map("map1")
+print("\n\n---------- Map 1 ----------")
+world.display()
+graph = NavGraph(world)
+path = graph.a_star()
+print("\n---------- Solution ----------")
+graph.write_path()
+
+# Test 2
+world = Map("map2")
+print("\n\n---------- Map 2 ----------")
+world.display()
+graph = NavGraph(world)
+path = graph.a_star()
+print("\n---------- Solution ----------")
+graph.write_path()
+
+# Test 3
+world = Map("map3")
+print("\n\n---------- Map 3 ----------")
+world.display()
+graph = NavGraph(world)
+path = graph.a_star()
+print("\n---------- Solution ----------")
+graph.write_path()
