@@ -1,17 +1,10 @@
-"""A* search
-I have a real love-hate relationship with this one lmao, thanks Professor Zuckerman
+"""A* implementation designed to navigate 2D spaces, where the heuristic function
+is the manhattan distance to the goal
 """
-# This time we'll need a double ended queue
-from collections import deque
+from rogue_map import Map
 
 
 class Graph:
-    """This time we'll use an adjacency list structured as a dictionary of
-    tuples (neighbor, cost):
-    # 'A': [('B', 1), ('C', 3), ('D', 7)],
-    # 'B': [('D', 5)],
-    # 'C': [('D', 12)]"""
-
     def __init__(self, adjacency_list):
         self.adjacency_list = adjacency_list
 
@@ -19,6 +12,7 @@ class Graph:
         return self.adjacency_list[v]
 
     # placeholder heuristic that checks a hardcoded lookup table
+    # Remember, heuristic must simply never OVER-estimate
     def h(self, n):
         H = {"A": 1, "B": 1, "C": 1, "D": 1, "E": 1, "F": 1, "G": 1}
         return H[n]
@@ -100,18 +94,3 @@ class Graph:
         # If we have left the loop without returning a path, fail
         print(f" No path exists between {start_node} and {goal_node}")
         return None
-
-
-# Test
-
-adjacency_list = {
-    "A": [("B", 1), ("C", 3), ("D", 7)],
-    "B": [("D", 5)],
-    "C": [("D", 12)],
-    "D": [("D", 12), ("E", 8)],
-    "E": [("F", 13), ("G", 6)],
-    "F": [("G", 3)],
-    "G": [("D", 12)],
-}
-graph = Graph(adjacency_list)
-graph.a_star("A", "D")
